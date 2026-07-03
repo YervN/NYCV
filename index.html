@@ -94,6 +94,7 @@
   .node-icon{ pointer-events:none; }
   .node-year{ font-size:18px; font-weight:800; fill:var(--pg-blue); text-anchor:middle; }
   .node-label{ font-size:14px; fill:var(--text); text-anchor:middle; font-weight:700;}
+  .node-label-sub{ font-size:12.5px; fill:var(--text); text-anchor:middle; font-weight:700;}
   .node-sub{ font-size:11.5px; fill:#7686a3; text-anchor:middle; font-weight:600;}
   .node-group.active .node-year{ fill:var(--accent3); }
 
@@ -286,12 +287,12 @@ const TO  = "assets/transport-logo.png";
 const CEO = "assets/ceo-award.png";
 
 const milestones = [
-  { year:"2015", title:"Master Data Analyst (W&S)", full:"Analyst – Supply Chain Master Data Planning", intern:true,
+  { year:"2015", title:"Master Data Analyst", titleSub:"(Intern)", full:"Intern – Master Data Analyst, Supply Chain Planning", intern:true,
     dept:"Baby Care", loc:"Warsaw, Mazowieckie, PL", icon:SNO, x:80, y:300,
     dates:"Dec 2015 – Jul 2016 · 8 mos", location:"Warsaw, Mazowieckie, Poland", bu:"Baby Care",
     fav:false, ceo:false, buChange:false,
     highlights:[
-      "Master Data Analyst for Baby Care – Europe PSC Tier1, Wipes &amp; Pants",
+      "Master Data Analyst intern for Baby Care – Europe PSC Tier1, Wipes &amp; Pants",
       "Collaborated cross-functionally to maintain data setup accuracy",
       "Ran regular Master Data audits in SAP",
       "Significantly improved BOM audit results across the category"
@@ -348,7 +349,7 @@ const milestones = [
       "Grew a 1,200+ member Digital Community of Practice as key trainer",
       "Designed &amp; hosted 6 hackathons (300+ people, 20+ solutions shipped)"
     ]},
-  { year:"2026", title:"Digital Strategy & AI Leader (B2)", full:"PD Digital Strategy &amp; AI Sr. Manager",
+  { year:"2026", title:"Digital Strategy & AI", titleSub:"Sr. Manager", full:"PD Digital Strategy &amp; AI Sr. Manager",
     dept:"Europe Transport ISF", loc:"Warsaw, Mazowieckie, PL", icon:TO, x:1520, y:90,
     dates:"Jun 2026 – Present · 2 mos", location:"Warsaw, Mazowieckie, Poland · Hybrid", bu:"Europe Transportation",
     fav:false, ceo:false, buChange:true,
@@ -361,6 +362,8 @@ const milestones = [
 
 const svgNS = "http://www.w3.org/2000/svg";
 const layer = document.getElementById('nodesLayer');
+const shortText = (text, max) => text.length > max ? text.slice(0, max - 2) + "…" : text;
+const physicalLocation = loc => loc.split(",")[0];
 
 milestones.forEach((m, i) => {
   const g = document.createElementNS(svgNS, "g");
@@ -393,12 +396,27 @@ milestones.forEach((m, i) => {
   const label = document.createElementNS(svgNS, "text");
   label.classList.add("node-label");
   label.setAttribute("x", m.x); label.setAttribute("y", m.y + 53);
-  label.textContent = m.title.length > 24 ? m.title.slice(0,22)+"…" : m.title;
+  label.textContent = shortText(m.title, 24);
 
-  const sub = document.createElementNS(svgNS, "text");
-  sub.classList.add("node-sub");
-  sub.setAttribute("x", m.x); sub.setAttribute("y", m.y + 70);
-  sub.textContent = `${m.loc} · ${m.dept.length > 20 ? m.dept.slice(0,18)+"…" : m.dept}`;
+  if(m.titleSub){
+    const titleSub = document.createElementNS(svgNS, "text");
+    titleSub.classList.add("node-label-sub");
+    titleSub.setAttribute("x", m.x); titleSub.setAttribute("y", m.y + 68);
+    titleSub.textContent = m.titleSub;
+    g.appendChild(titleSub);
+  }
+
+  const subOffset = m.titleSub ? 14 : 0;
+
+  const physical = document.createElementNS(svgNS, "text");
+  physical.classList.add("node-sub");
+  physical.setAttribute("x", m.x); physical.setAttribute("y", m.y + 70 + subOffset);
+  physical.textContent = physicalLocation(m.loc);
+
+  const roleLocation = document.createElementNS(svgNS, "text");
+  roleLocation.classList.add("node-sub");
+  roleLocation.setAttribute("x", m.x); roleLocation.setAttribute("y", m.y + 84 + subOffset);
+  roleLocation.textContent = shortText(m.dept, 24);
 
   g.appendChild(halo);
   g.appendChild(pulse);
@@ -406,7 +424,8 @@ milestones.forEach((m, i) => {
   g.appendChild(icon);
   g.appendChild(year);
   g.appendChild(label);
-  g.appendChild(sub);
+  g.appendChild(physical);
+  g.appendChild(roleLocation);
 
   // badges: star (favorite) upper-left, CEO award upper-right, BU-change lower-center
   if(m.fav){
