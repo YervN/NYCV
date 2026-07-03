@@ -50,6 +50,7 @@
   .pg-logo{ height:42px; margin-right:8px; }
   .header-right{ display:flex; align-items:center; justify-content:flex-end; gap:18px; flex:1 1 58%; min-width:0; }
   .quick-info{ display:flex; flex-direction:column; gap:5px; width:min(760px, 52vw); }
+  .mobile-text{ display:none; }
   .qi-row{
     display:flex; align-items:center; gap:7px; font-size:.74rem; color:#eaf1ff;
     background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.28);
@@ -74,6 +75,8 @@
     stroke-dasharray:16 16; animation:dash 2.4s linear infinite;
   }
   @keyframes dash{ to{ stroke-dashoffset:-56; } }
+
+  .mobile-graph-ui{ display:none; }
 
   .node-group{cursor:pointer;}
   .node-halo{fill:none; stroke:rgba(0,145,213,.3); stroke-width:2; opacity:0; transition:.3s;}
@@ -175,6 +178,93 @@
   .flip-back .emoji{ font-size:1.5rem; margin-bottom:4px;}
   .flip-back p{ font-size:.78rem; color:var(--text); line-height:1.3; }
 
+  @media (max-width:760px), (hover:none) and (pointer:coarse){
+    html,body{ overflow:hidden; }
+    header{
+      padding:10px 12px; gap:10px; align-items:flex-start;
+      box-shadow:0 6px 22px rgba(0,41,122,.28);
+    }
+    .who{ flex:1 1 auto; min-width:0; gap:10px; }
+    .avatar{ width:46px; height:46px; }
+    .who h1{ font-size:1.05rem; line-height:1.1; }
+    .who p{ font-size:.68rem; line-height:1.2; margin-top:3px; }
+    .badge{ font-size:.56rem; padding:2px 7px; margin-top:5px; }
+    .header-right{ flex:0 0 auto; gap:8px; align-items:flex-start; }
+    .quick-info{ width:auto; max-width:42vw; gap:0; }
+    .qi-row.mobile-hide{ display:none; }
+    .qi-row{
+      font-size:.62rem; padding:5px 8px; border-radius:12px;
+      background:rgba(255,255,255,.16);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+    }
+    .desktop-text{ display:none; }
+    .mobile-text{ display:inline; }
+    .pg-logo{ height:30px; margin-right:0; }
+
+    main{ align-items:stretch; justify-content:flex-start; min-height:240px; padding:0; overflow:hidden; }
+    #timelineWrap{
+      position:relative; justify-content:flex-start; align-items:flex-start;
+      overflow:auto; padding:46px 12px 8px;
+      -webkit-overflow-scrolling:touch;
+      background:
+        radial-gradient(circle at 20% 12%, rgba(0,145,213,.12), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(244,247,252,.2));
+    }
+    #timelineWrap::-webkit-scrollbar{ height:6px; width:6px; }
+    #timelineWrap::-webkit-scrollbar-thumb{ background:#cbd7ea; border-radius:8px; }
+    #pathSvg{
+      flex:0 0 auto; width:1080px; height:284px; max-height:none;
+      filter:drop-shadow(0 10px 20px rgba(20,40,90,.10));
+      transition:width .18s ease, height .18s ease;
+    }
+    .mobile-graph-ui{
+      position:absolute; top:8px; left:12px; right:12px; z-index:5;
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      pointer-events:none;
+    }
+    .zoom-hint{
+      color:var(--muted); background:rgba(255,255,255,.86);
+      border:1px solid var(--line); border-radius:999px; padding:6px 10px;
+      font-size:.68rem; font-weight:700; box-shadow:0 5px 14px rgba(20,40,90,.10);
+      backdrop-filter:blur(10px);
+    }
+    .zoom-buttons{ display:flex; gap:6px; pointer-events:auto; }
+    .zoom-buttons button{
+      width:32px; height:32px; border:0; border-radius:11px; cursor:pointer;
+      color:#fff; font-size:1rem; font-weight:800;
+      background:linear-gradient(135deg, var(--pg-blue), var(--accent2));
+      box-shadow:0 5px 13px rgba(0,41,122,.22);
+    }
+    .zoom-buttons button:active{ transform:scale(.96); }
+
+    .node-circle{ r:25; }
+    .node-label{ font-size:13px; }
+    .node-label-sub{ font-size:11.5px; }
+    .node-sub{ font-size:10.8px; }
+
+    #detailBar{
+      margin:0 12px 8px; height:22vh; min-height:124px; max-height:170px;
+      padding:12px; gap:12px; border-radius:15px;
+      box-shadow:0 8px 20px rgba(20,40,90,.09);
+    }
+    .db-left{ flex:0 0 42%; gap:5px; padding-right:10px; }
+    .db-head{ gap:7px; }
+    .db-icon{ width:32px; height:32px; border-radius:9px; }
+    .db-head h3{ font-size:.78rem; line-height:1.18; }
+    .db-badges span{ font-size:.57rem; padding:1px 5px; }
+    .db-meta{ font-size:.64rem; line-height:1.2; gap:2px; }
+    .db-highlights{ gap:5px; }
+    .db-highlights li{ font-size:.72rem; line-height:1.28; gap:5px; }
+    .db-placeholder{ font-size:.78rem; padding:0 10px; }
+
+    #personal{ padding:4px 12px 10px; max-height:21vh; }
+    #personal .ptitle{ font-size:.62rem; margin-bottom:5px; }
+    .flip-row{ justify-content:flex-start; gap:10px; }
+    .flip-card,.quote-card{ height:13vh; min-height:92px; }
+    .flip-back p{ font-size:.66rem; }
+    .flip-back .emoji{ font-size:1.2rem; }
+  }
+
   ::selection{ background:var(--accent); color:#fff; }
 </style>
 </head>
@@ -193,9 +283,9 @@
   </div>
   <div class="header-right">
     <div class="quick-info">
-      <div class="qi-row"><span class="qi-icon">🎓</span><span><b>Warsaw University</b> BA/MA · Faculty of Economic Sciences - Computer Science and Econometrics · <b>Bologna</b> Exchange</span></div>
-      <div class="qi-row"><span class="qi-icon">🧠</span><span><b>Skills:</b> Digital strategy, AI enablement, transport systems, supply chain planning, automation &amp; analytics</span></div>
-      <div class="qi-row"><span class="qi-icon">🏅</span><span><b>Qualified Coach</b> · <b>Qualified Interviewer</b> · Trainer · P&amp;G LinkedIn Ambassador</span></div>
+      <div class="qi-row qi-education mobile-hide"><span class="qi-icon">🎓</span><span><b>Warsaw University</b> BA/MA · Faculty of Economic Sciences - Computer Science and Econometrics · <b>Bologna</b> Exchange</span></div>
+      <div class="qi-row qi-skills mobile-hide"><span class="qi-icon">🧠</span><span><b>Skills:</b> Digital strategy, AI enablement, transport systems, supply chain planning, automation &amp; analytics</span></div>
+      <div class="qi-row qi-credentials"><span class="qi-icon">🏅</span><span><span class="desktop-text"><b>Qualified Coach</b> · <b>Qualified Interviewer</b> · Trainer · P&amp;G LinkedIn Ambassador</span><span class="mobile-text"><b>Coach</b> · Interviewer</span></span></div>
     </div>
     <img class="pg-logo" src="assets/pg-logo.png" alt="P&G">
   </div>
@@ -203,6 +293,14 @@
 
 <main>
   <div id="timelineWrap">
+  <div class="mobile-graph-ui">
+    <span class="zoom-hint">Pinch or use buttons to zoom</span>
+    <div class="zoom-buttons" aria-label="Timeline zoom controls">
+      <button type="button" data-zoom="out" aria-label="Zoom timeline out">−</button>
+      <button type="button" data-zoom="reset" aria-label="Reset timeline zoom">↺</button>
+      <button type="button" data-zoom="in" aria-label="Zoom timeline in">+</button>
+    </div>
+  </div>
   <svg id="pathSvg" viewBox="0 0 1600 420" preserveAspectRatio="xMidYMid meet">
     <defs>
       <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -362,8 +460,116 @@ const milestones = [
 
 const svgNS = "http://www.w3.org/2000/svg";
 const layer = document.getElementById('nodesLayer');
+const timelineWrap = document.getElementById('timelineWrap');
+const pathSvg = document.getElementById('pathSvg');
+const mobileQuery = window.matchMedia('(max-width: 760px), (hover: none) and (pointer: coarse)');
+const graphZoom = { scale: 1, min: 1, max: 1.8, step: 0.16, baseWidth: 1080, baseHeight: 284 };
 const shortText = (text, max) => text.length > max ? text.slice(0, max - 2) + "…" : text;
 const physicalLocation = loc => loc.split(",")[0];
+const isMobileLayout = () => mobileQuery.matches;
+
+function applyGraphZoom(nextScale, focalPoint){
+  if(!isMobileLayout()){
+    pathSvg.style.width = "";
+    pathSvg.style.height = "";
+    return;
+  }
+
+  const scale = Math.min(graphZoom.max, Math.max(graphZoom.min, nextScale));
+  const rect = timelineWrap.getBoundingClientRect();
+  const focalX = focalPoint ? focalPoint.x - rect.left : timelineWrap.clientWidth / 2;
+  const focalY = focalPoint ? focalPoint.y - rect.top : timelineWrap.clientHeight / 2;
+  const beforeWidth = Math.max(1, timelineWrap.scrollWidth);
+  const beforeHeight = Math.max(1, timelineWrap.scrollHeight);
+  const ratioX = (timelineWrap.scrollLeft + focalX) / beforeWidth;
+  const ratioY = (timelineWrap.scrollTop + focalY) / beforeHeight;
+
+  graphZoom.scale = scale;
+  pathSvg.style.width = `${graphZoom.baseWidth * scale}px`;
+  pathSvg.style.height = `${graphZoom.baseHeight * scale}px`;
+
+  requestAnimationFrame(() => {
+    timelineWrap.scrollLeft = Math.max(0, ratioX * timelineWrap.scrollWidth - focalX);
+    timelineWrap.scrollTop = Math.max(0, ratioY * timelineWrap.scrollHeight - focalY);
+  });
+}
+
+function centerMilestoneInView(i, behavior = 'smooth'){
+  if(!isMobileLayout()) return;
+  const m = milestones[i];
+  requestAnimationFrame(() => {
+    const svgWidth = pathSvg.getBoundingClientRect().width || graphZoom.baseWidth;
+    const svgHeight = pathSvg.getBoundingClientRect().height || graphZoom.baseHeight;
+    const targetX = (m.x / 1600) * svgWidth;
+    const targetY = (m.y / 420) * svgHeight;
+    timelineWrap.scrollTo({
+      left: Math.max(0, targetX - timelineWrap.clientWidth / 2),
+      top: Math.max(0, targetY - timelineWrap.clientHeight / 2),
+      behavior
+    });
+  });
+}
+
+function syncResponsiveMode(){
+  document.body.classList.toggle('is-mobile', isMobileLayout());
+  if(isMobileLayout()){
+    applyGraphZoom(graphZoom.scale);
+  }else{
+    pathSvg.style.width = "";
+    pathSvg.style.height = "";
+  }
+}
+
+if(mobileQuery.addEventListener){
+  mobileQuery.addEventListener('change', syncResponsiveMode);
+}else{
+  mobileQuery.addListener(syncResponsiveMode);
+}
+window.addEventListener('resize', () => {
+  syncResponsiveMode();
+  const active = document.querySelector('.node-group.active');
+  if(active) centerMilestoneInView(Number(active.dataset.idx), 'auto');
+});
+
+document.querySelectorAll('[data-zoom]').forEach(button => {
+  button.addEventListener('click', () => {
+    if(!isMobileLayout()) return;
+    const action = button.dataset.zoom;
+    const nextScale = action === 'in'
+      ? graphZoom.scale + graphZoom.step
+      : action === 'out'
+        ? graphZoom.scale - graphZoom.step
+        : 1;
+    applyGraphZoom(nextScale);
+  });
+});
+
+let pinchStartDistance = 0;
+let pinchStartScale = 1;
+const touchDistance = touches => Math.hypot(
+  touches[0].clientX - touches[1].clientX,
+  touches[0].clientY - touches[1].clientY
+);
+
+timelineWrap.addEventListener('touchstart', event => {
+  if(!isMobileLayout() || event.touches.length !== 2) return;
+  pinchStartDistance = touchDistance(event.touches);
+  pinchStartScale = graphZoom.scale;
+}, { passive:true });
+
+timelineWrap.addEventListener('touchmove', event => {
+  if(!isMobileLayout() || event.touches.length !== 2 || !pinchStartDistance) return;
+  event.preventDefault();
+  const midpoint = {
+    x: (event.touches[0].clientX + event.touches[1].clientX) / 2,
+    y: (event.touches[0].clientY + event.touches[1].clientY) / 2
+  };
+  applyGraphZoom(pinchStartScale * (touchDistance(event.touches) / pinchStartDistance), midpoint);
+}, { passive:false });
+
+timelineWrap.addEventListener('touchend', () => {
+  pinchStartDistance = 0;
+});
 
 milestones.forEach((m, i) => {
   const g = document.createElementNS(svgNS, "g");
@@ -486,8 +692,10 @@ function selectMilestone(i){
     </div>
     <ul class="db-right db-highlights">${highlightsHtml}</ul>
   `;
+  centerMilestoneInView(i);
 }
 
+syncResponsiveMode();
 window.addEventListener('load', () => setTimeout(() => selectMilestone(milestones.length - 1), 600));
 </script>
 </body>
