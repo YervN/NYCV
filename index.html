@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yervand Nahapetyan — Career Journey</title>
+<style>
+  :root{
+    --pg-blue:#003DA5; --pg-blue-dark:#00297a; --pg-light:#e8f1ff;
+    --accent:#0091d5; --accent2:#6a3bd6; --accent3:#e0673a;
+    --text:#1b2536; --muted:#5b6b85; --card:#ffffff; --line:#e3e9f4;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%; overflow:hidden;}
+  body{
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    background:#f4f7fc;
+    color:var(--text);
+    height:100vh; width:100vw;
+    display:flex; flex-direction:column;
+    position:relative;
+  }
+
+  .bg-dots{
+    position:fixed; inset:0; z-index:0; opacity:.5; pointer-events:none;
+    background-image: radial-gradient(rgba(0,61,165,.10) 1.5px, transparent 1.5px);
+    background-size:26px 26px;
+  }
+
+  /* ===== HEADER — P&G blue bar ===== */
+  header{
+    position:relative; z-index:6;
+    background:linear-gradient(100deg, var(--pg-blue) 0%, var(--pg-blue-dark) 75%);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 30px; flex:0 0 auto;
+    box-shadow:0 4px 18px rgba(0,41,122,.35);
+  }
+  .who{display:flex; align-items:center; gap:16px; flex:0 1 42%;}
+  .avatar{
+    width:60px; height:60px; border-radius:50%; object-fit:cover;
+    border:2px solid #fff; box-shadow:0 0 0 3px rgba(255,255,255,.25);
+  }
+  .who h1{font-size:1.35rem; font-weight:700; color:#fff; letter-spacing:.2px;}
+  .who p{font-size:.8rem; color:#cfe0ff; margin-top:2px;}
+  .badge{
+    display:inline-block; margin-top:4px; font-size:.66rem; padding:2px 10px; border-radius:20px;
+    background:rgba(255,255,255,.18); color:#fff; font-weight:600;
+    letter-spacing:.4px; border:1px solid rgba(255,255,255,.35);
+  }
+  .pg-logo{ height:42px; margin-right:8px; }
+  .header-right{ display:flex; align-items:center; justify-content:flex-end; gap:18px; flex:1 1 58%; min-width:0; }
+  .quick-info{ display:flex; flex-direction:column; gap:5px; width:min(760px, 52vw); }
+  .qi-row{
+    display:flex; align-items:center; gap:7px; font-size:.74rem; color:#eaf1ff;
+    background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.28);
+    padding:4px 12px; border-radius:14px; line-height:1.25;
+  }
+  .qi-row b{ color:#fff; font-weight:700; }
+  .qi-icon{ flex:0 0 auto; }
+  .qi-row .sep{ opacity:.5; margin:0 2px; }
+
+  /* ===== MAIN TIMELINE ===== */
+  main{
+    flex:1 1 auto; position:relative; z-index:2;
+    display:flex; align-items:center; justify-content:center;
+    min-height:0; padding:0 10px;
+    overflow:auto;
+  }
+  #timelineWrap{ width:100%; height:100%; min-height:280px; display:flex; align-items:center; justify-content:center; }
+  #pathSvg{width:100%; height:100%; max-height:44vh;}
+  .path-bg{fill:none; stroke:#d7e2f5; stroke-width:7; stroke-linecap:round;}
+  .path-flow{
+    fill:none; stroke:url(#flowGrad); stroke-width:7; stroke-linecap:round;
+    stroke-dasharray:16 16; animation:dash 2.4s linear infinite;
+  }
+  @keyframes dash{ to{ stroke-dashoffset:-56; } }
+
+  .node-group{cursor:pointer;}
+  .node-halo{fill:none; stroke:rgba(0,145,213,.3); stroke-width:2; opacity:0; transition:.3s;}
+  .node-circle{
+    r:27; fill:#fff; stroke:var(--accent2); stroke-width:3.5;
+    filter:drop-shadow(0 3px 8px rgba(30,50,100,.25));
+    transition:.25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .node-group:hover .node-circle{ stroke:var(--accent); r:30; }
+  .node-group:hover .node-halo{ opacity:1; r:40; }
+  .node-group.active .node-circle{ fill:var(--pg-blue); stroke:var(--accent3); }
+  .node-pulse{ fill:none; stroke:var(--accent); stroke-width:2; opacity:0; }
+  .node-group.active .node-pulse{ animation:pulse 1.6s ease-out infinite; }
+  @keyframes pulse{
+    0%{ r:27; opacity:.8; }
+    100%{ r:50; opacity:0; }
+  }
+  .node-icon{ pointer-events:none; }
+  .node-year{ font-size:18px; font-weight:800; fill:var(--pg-blue); text-anchor:middle; }
+  .node-label{ font-size:14px; fill:var(--text); text-anchor:middle; font-weight:700;}
+  .node-sub{ font-size:11.5px; fill:#7686a3; text-anchor:middle; font-weight:600;}
+  .node-group.active .node-year{ fill:var(--accent3); }
+
+  .badge-star{ font-size:19px; text-anchor:middle; filter:drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
+  .badge-ceo{ filter:drop-shadow(0 1px 3px rgba(0,0,0,.35)); }
+  .badge-bu-circle{ fill:var(--accent2); stroke:#fff; stroke-width:1.5; filter:drop-shadow(0 1px 2px rgba(0,0,0,.3)); }
+  .badge-bu-text{ font-size:7.5px; font-weight:800; fill:#fff; text-anchor:middle; dominant-baseline:middle; }
+
+  .arrowhead{ fill:var(--accent3); }
+
+  /* ===== DETAIL BAR (between map and personal photos) — squeezes, doesn't scroll ===== */
+  #detailBar{
+    flex:0 1 auto; margin:4px 30px 8px; height:19vh; min-height:110px; max-height:220px;
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    box-shadow:0 8px 24px rgba(20,40,90,.10);
+    display:flex; gap:22px; padding:14px 26px; z-index:2; position:relative;
+    overflow:hidden;
+  }
+  .db-left{ flex:0 0 260px; display:flex; flex-direction:column; gap:6px; border-right:1px dashed var(--line); padding-right:20px; }
+  .db-head{ display:flex; align-items:center; gap:10px; }
+  .db-icon{
+    width:40px; height:40px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+    background:var(--pg-light); flex:0 0 auto; padding:6px;
+  }
+  .db-icon img{ width:100%; height:100%; object-fit:contain; }
+  .db-head h3{ font-size:.98rem; color:var(--text); line-height:1.25; }
+  .db-badges{ display:flex; gap:5px; flex-wrap:wrap; }
+  .db-badges span{ font-size:.68rem; padding:1px 7px; border-radius:10px; font-weight:700; white-space:nowrap; }
+  .db-badges .b-ceo{ background:#fff2df; color:#a5690b; }
+  .db-badges .b-fav{ background:#fff0f4; color:#c23a63; }
+  .db-badges .b-bu{ background:#eee7fb; color:var(--accent2); }
+  .db-meta{ font-size:.76rem; color:var(--muted); display:flex; flex-direction:column; gap:3px; }
+  .db-right{ flex:1; overflow-y:auto; }
+  .db-right::-webkit-scrollbar{ width:6px; }
+  .db-right::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
+  .db-highlights{ list-style:none; display:flex; flex-direction:column; gap:6px; }
+  .db-highlights li{ font-size:.82rem; line-height:1.35; color:var(--text); display:flex; gap:7px; }
+  .db-highlights li::before{ content:"▸"; color:var(--accent); flex:0 0 auto; }
+  .db-placeholder{ color:var(--muted); font-size:.9rem; margin:auto; text-align:center; }
+
+  /* ===== PERSONAL STRIP — scrolls internally if content taller/wider than its frame ===== */
+  #personal{
+    flex:0 1 auto; z-index:2; position:relative;
+    padding:6px 30px 14px;
+    max-height:32vh; overflow-y:auto; overflow-x:hidden;
+  }
+  #personal::-webkit-scrollbar{ width:6px; }
+  #personal::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
+  #personal .ptitle{ font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:6px; display:flex; align-items:center; gap:10px;}
+  #personal .ptitle::after{ content:""; flex:1; height:1px; background:linear-gradient(90deg, var(--line), transparent); }
+  .flip-row{ display:flex; gap:14px; justify-content:center; align-items:stretch; overflow-x:auto; overflow-y:hidden; padding-bottom:6px; }
+  .flip-row::-webkit-scrollbar{ height:6px; }
+  .flip-row::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
+  .flip-card{
+    flex:0 0 auto; height:19vh; min-height:130px; aspect-ratio:var(--ar); width:auto;
+    perspective:1000px; cursor:pointer;
+  }
+  .quote-card{
+    flex:0 0 auto; height:19vh; min-height:130px; aspect-ratio:898/768; width:auto;
+    perspective:1000px; cursor:pointer;
+  }
+  .flip-inner{
+    position:relative; width:100%; height:100%; transition:transform .7s cubic-bezier(.4,.2,.2,1); transform-style:preserve-3d;
+    border-radius:14px;
+  }
+  .flip-card.flipped .flip-inner{ transform:rotateY(180deg); }
+  .flip-front, .flip-back{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:14px; overflow:hidden;
+    border:1px solid var(--line); background:#fff;
+    box-shadow:0 6px 18px rgba(20,40,90,.10);
+  }
+  .flip-front img{ width:100%; height:100%; object-fit:cover; background:#fff; transition:.35s; }
+  .flip-card:hover .flip-front img{ transform:scale(1.03); }
+  .flip-back{
+    transform:rotateY(180deg); background:linear-gradient(135deg, var(--pg-light), #fff);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:10px;
+  }
+  .flip-back .emoji{ font-size:1.5rem; margin-bottom:4px;}
+  .flip-back p{ font-size:.78rem; color:var(--text); line-height:1.3; }
+
+  ::selection{ background:var(--accent); color:#fff; }
+</style>
+</head>
+<body>
+
+<div class="bg-dots"></div>
+
+<header>
+  <div class="who">
+    <img class="avatar" src="assets/headshot.jpg" alt="Yervand Nahapetyan">
+    <div>
+      <h1>Yervand Nahapetyan</h1>
+      <p>Digital Strategy &amp; AI Leader · Europe Transport ISF · Warsaw, Poland</p>
+      <span class="badge">2015 – Present · 10+ years at P&amp;G</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="quick-info">
+      <div class="qi-row"><span class="qi-icon">🎓</span><span><b>Warsaw University</b> BA/MA · Faculty of Economic Sciences - Computer Science and Econometrics · <b>Bologna</b> Exchange</span></div>
+      <div class="qi-row"><span class="qi-icon">🧠</span><span><b>Skills:</b> Digital strategy, AI enablement, transport systems, supply chain planning, automation &amp; analytics</span></div>
+      <div class="qi-row"><span class="qi-icon">🏅</span><span><b>Qualified Coach</b> · <b>Qualified Interviewer</b> · Trainer · P&amp;G LinkedIn Ambassador</span></div>
+    </div>
+    <img class="pg-logo" src="assets/pg-logo.png" alt="P&G">
+  </div>
+</header>
+
+<main>
+  <div id="timelineWrap">
+  <svg id="pathSvg" viewBox="0 0 1600 420" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#0091d5"/>
+        <stop offset="50%" stop-color="#6a3bd6"/>
+        <stop offset="100%" stop-color="#e0673a"/>
+      </linearGradient>
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" class="arrowhead"/>
+      </marker>
+    </defs>
+
+    <path id="mainPath" class="path-bg"
+      d="M 80,300 C 200,300 220,255 320,250
+         C 420,245 440,205 560,200
+         C 680,195 700,155 800,150
+         C 900,145 920,150 1040,150
+         C 1160,150 1180,95 1280,90
+         C 1380,85 1400,90 1520,90" />
+    <path class="path-flow" marker-end="url(#arrow)"
+      d="M 80,300 C 200,300 220,255 320,250
+         C 420,245 440,205 560,200
+         C 680,195 700,155 800,150
+         C 900,145 920,150 1040,150
+         C 1160,150 1180,95 1280,90
+         C 1380,85 1400,90 1520,90" />
+
+    <g id="nodesLayer"></g>
+  </svg>
+  </div>
+</main>
+
+<div id="detailBar">
+  <div class="db-placeholder" id="dbPlaceholder">👆 Click a milestone above to see the years active, location, BU and highlights of that role.</div>
+</div>
+
+<section id="personal">
+  <div class="ptitle">Life beyond P&amp;G</div>
+  <div class="flip-row">
+    <div class="flip-card quote-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front"><img src="assets/quote.png" alt="Bill Gates quote — I choose a lazy person to do a hard job"></div>
+        <div class="flip-back"><div class="emoji">😄</div><p>Guilty as charged — I'm a lazy person myself and love finding shortcuts. Half of my career highlights above started as "there has to be an easier way to do this".</p></div>
+      </div>
+    </div>
+    <div class="flip-card" style="--ar:804/551" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front"><img src="assets/travel.png" alt="Family in Venice"></div>
+        <div class="flip-back"><div class="emoji">👨‍👩‍👧‍👦</div><p>Family trips &gt; life plans. Venice with my wife &amp; two kids — my favorite kind of "strategy offsite".</p></div>
+      </div>
+    </div>
+    <div class="flip-card" style="--ar:756/555" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front"><img src="assets/grill.png" alt="Grilling outdoors"></div>
+        <div class="flip-back"><div class="emoji">🍖</div><p>Good food, open air, happy me. Nothing resets the brain like smoke &amp; skewers on a weekend.</p></div>
+      </div>
+    </div>
+    <div class="flip-card" style="--ar:642/551" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front"><img src="assets/dive.png" alt="Underwater with son"></div>
+        <div class="flip-back"><div class="emoji">🌊</div><p>Ocean mind, happy soul. Teaching my son to love the water, one dive at a time.</p></div>
+      </div>
+    </div>
+    <div class="flip-card" style="--ar:766/551" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front"><img src="assets/geek.png" alt="Hosting a hackathon"></div>
+        <div class="flip-back"><div class="emoji">💍</div><p>HP · LOTR · SW — need I say more? Once hosted a hackathon as "Gandalf": guide, mentor, problem-solver.</p></div>
+      </div>
+    </div>
+    <div class="flip-card" style="--ar:960/870" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front"><img src="assets/chess.jpg" alt="Playing chess with my son"></div>
+        <div class="flip-back"><div class="emoji">♟️</div><p>Passionate chess player — already passing the love of the game (and a little strategic thinking) on to my son.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const SNO = "assets/sno-logo.png";
+const TO  = "assets/transport-logo.png";
+const CEO = "assets/ceo-award.png";
+
+const milestones = [
+  { year:"2015", title:"Master Data Analyst (W&S)", full:"Analyst – Supply Chain Master Data Planning", intern:true,
+    dept:"Baby Care", loc:"Warsaw, Mazowieckie, PL", icon:SNO, x:80, y:300,
+    dates:"Dec 2015 – Jul 2016 · 8 mos", location:"Warsaw, Mazowieckie, Poland", bu:"Baby Care",
+    fav:false, ceo:false, buChange:false,
+    highlights:[
+      "Master Data Analyst for Baby Care – Europe PSC Tier1, Wipes &amp; Pants",
+      "Collaborated cross-functionally to maintain data setup accuracy",
+      "Ran regular Master Data audits in SAP",
+      "Significantly improved BOM audit results across the category"
+    ]},
+  { year:"2017", title:"SIP RPM Planner (S3)", full:"Specialist – Supply Chain Raw and Pack Material Planning",
+    dept:"Home Care", loc:"Warsaw, Mazowieckie, PL", icon:SNO, x:320, y:250,
+    dates:"May 2017 – Apr 2018 · 1 yr", location:"Warsaw, Mazowieckie, Poland", bu:"Home Care",
+    fav:false, ceo:false, buChange:true,
+    highlights:[
+      "Planned Raw &amp; Pack material deliveries to 2 P&amp;G plants (RU, UA), running 24/7",
+      "Sourced materials from suppliers across Europe, NA &amp; Asia",
+      "0 production risk from material unavailability — all deliveries on time",
+      "🏆 P&amp;G Golden Award for the \"Syncro Booster\" tool — improved RPM sync &amp; DOH by 14%"
+    ]},
+  { year:"2018", title:"SIP FP Planner (S4)", full:"Senior Specialist – Supply Chain Finished Product Planning",
+    dept:"Home Care", loc:"Warsaw, Masovian, PL", icon:SNO, x:560, y:200,
+    dates:"May 2018 – Sep 2020 · 2 yrs 5 mos", location:"Warsaw, Masovian District, Poland", bu:"Home Care",
+    fav:true, ceo:true, buChange:false,
+    highlights:[
+      "Scheduled short-term FP &amp; intermediates plans for 15 lines at P&amp;G Russia plant (24/7)",
+      "Supplied RU, BY, UA, KZ, KG, AM markets + Fater",
+      "0h production stops, service &gt;99%, FP Days-on-Hand down 17%",
+      "Automated 12h/week of manual work",
+      "🏆 CEO Award for extraordinary impact on the company and business"
+    ]},
+  { year:"2020", title:"MDA Leader (B1)", full:"Manager – Supply Chain Demand and Distribution Requirement Planning",
+    dept:"Home Care", loc:"Warsaw, Mazowieckie, PL", icon:SNO, x:800, y:150,
+    dates:"Sep 2020 – Feb 2022 · 1 yr 6 mos", location:"Warsaw, Mazowieckie, Poland", bu:"Home Care",
+    fav:false, ceo:false, buChange:false,
+    highlights:[
+      "Led DRP &amp; DP team for Home Care across RU, UA, BY, KZ, KG — $400M+ monthly shipments",
+      "Team Award: 12 consecutive months of 99%+ service",
+      "Redesigned deployment planning process, saving 30+ h/month of manual work",
+      "🥇 Gold Award — urgent shipment management (+$2MM NOS) &amp; process improvement"
+    ]},
+  { year:"2022", title:"SIP Leader (B1)", full:"Manager – Site Integrated Planning (RPM &amp; FP lead)",
+    dept:"Home Care", loc:"Warsaw, Mazowieckie, PL", icon:SNO, x:1040, y:150,
+    dates:"Mar 2022 – Jun 2023 · 1 yr 4 mos", location:"Warsaw, Mazowieckie, Poland · Hybrid", bu:"Home Care",
+    fav:true, ceo:false, buChange:false,
+    highlights:[
+      "Headed Site Integrated Planning (FP+RPM) for P&amp;G London plant — 24/7, EU/Asia/Africa, 24% of global HC volume",
+      "Led Short-Term RCCP reporting to GM; service, inventory, PIPO &amp; master data governance",
+      "Managed &amp; coached a team of 5 specialists",
+      "Led crisis calls mitigating post-Brexit &amp; post-Covid supply risk"
+    ]},
+  { year:"2023", title:"Sr. DevOps Manager (B2)", full:"Senior Manager – DevOps Leader, SNH Europe Central Capability Team",
+    dept:"Europe MO + Global CF", loc:"Warsaw, Mazowieckie, PL", icon:SNO, x:1280, y:90,
+    dates:"Jun 2023 – Jun 2026 · 3 yrs 1 mo", location:"Warsaw, Mazowieckie, Poland · Hybrid", bu:"SNH Europe Central Capability",
+    fav:true, ceo:true, buChange:true,
+    highlights:[
+      "Led digital transformation for a 1,200+ person Supply Chain planning organization",
+      "Built a deployment optimization engine: +8% plan accuracy, 30× faster (120→4 min), 6.5 FTE saved, +0.5pp service — used daily by 400+ planners",
+      "Ran a DevOps team across Databricks, Python, SQL, Power BI/Apps/Automate, UiPath &amp; Rulex — 400+ h/week saved",
+      "Grew a 1,200+ member Digital Community of Practice as key trainer",
+      "Designed &amp; hosted 6 hackathons (300+ people, 20+ solutions shipped)"
+    ]},
+  { year:"2026", title:"Digital Strategy & AI Leader (B2)", full:"PD Digital Strategy &amp; AI Sr. Manager",
+    dept:"Europe Transport ISF", loc:"Warsaw, Mazowieckie, PL", icon:TO, x:1520, y:90,
+    dates:"Jun 2026 – Present · 2 mos", location:"Warsaw, Mazowieckie, Poland · Hybrid", bu:"Europe Transportation",
+    fav:false, ceo:false, buChange:true,
+    highlights:[
+      "Overseeing digital strategy for Europe Transportation — 50+ DCs and 300+ carriers",
+      "Building digital capability across the operations team",
+      "Developing cost &amp; CO2 saving projects"
+    ]},
+];
+
+const svgNS = "http://www.w3.org/2000/svg";
+const layer = document.getElementById('nodesLayer');
+
+milestones.forEach((m, i) => {
+  const g = document.createElementNS(svgNS, "g");
+  g.classList.add("node-group");
+  g.setAttribute("data-idx", i);
+
+  const halo = document.createElementNS(svgNS, "circle");
+  halo.classList.add("node-halo");
+  halo.setAttribute("cx", m.x); halo.setAttribute("cy", m.y); halo.setAttribute("r", 36);
+
+  const pulse = document.createElementNS(svgNS, "circle");
+  pulse.classList.add("node-pulse");
+  pulse.setAttribute("cx", m.x); pulse.setAttribute("cy", m.y); pulse.setAttribute("r", 27);
+
+  const circle = document.createElementNS(svgNS, "circle");
+  circle.classList.add("node-circle");
+  circle.setAttribute("cx", m.x); circle.setAttribute("cy", m.y); circle.setAttribute("r", 27);
+
+  const icon = document.createElementNS(svgNS, "image");
+  icon.classList.add("node-icon");
+  icon.setAttribute("href", m.icon);
+  icon.setAttribute("x", m.x - 17); icon.setAttribute("y", m.y - 17);
+  icon.setAttribute("width", 34); icon.setAttribute("height", 34);
+
+  const year = document.createElementNS(svgNS, "text");
+  year.classList.add("node-year");
+  year.setAttribute("x", m.x); year.setAttribute("y", m.y - 42);
+  year.textContent = m.year;
+
+  const label = document.createElementNS(svgNS, "text");
+  label.classList.add("node-label");
+  label.setAttribute("x", m.x); label.setAttribute("y", m.y + 53);
+  label.textContent = m.title.length > 24 ? m.title.slice(0,22)+"…" : m.title;
+
+  const sub = document.createElementNS(svgNS, "text");
+  sub.classList.add("node-sub");
+  sub.setAttribute("x", m.x); sub.setAttribute("y", m.y + 70);
+  sub.textContent = `${m.loc} · ${m.dept.length > 20 ? m.dept.slice(0,18)+"…" : m.dept}`;
+
+  g.appendChild(halo);
+  g.appendChild(pulse);
+  g.appendChild(circle);
+  g.appendChild(icon);
+  g.appendChild(year);
+  g.appendChild(label);
+  g.appendChild(sub);
+
+  // badges: star (favorite) upper-left, CEO award upper-right, BU-change lower-center
+  if(m.fav){
+    const star = document.createElementNS(svgNS, "text");
+    star.classList.add("badge-star");
+    star.setAttribute("x", m.x - 30); star.setAttribute("y", m.y - 22);
+    star.textContent = "⭐";
+    g.appendChild(star);
+  }
+  if(m.ceo){
+    const ceoImg = document.createElementNS(svgNS, "image");
+    ceoImg.classList.add("badge-ceo");
+    ceoImg.setAttribute("href", CEO);
+    ceoImg.setAttribute("x", m.x + 12); ceoImg.setAttribute("y", m.y - 44);
+    ceoImg.setAttribute("width", 32); ceoImg.setAttribute("height", 32);
+    g.appendChild(ceoImg);
+  }
+  if(m.buChange){
+    const buC = document.createElementNS(svgNS, "circle");
+    buC.classList.add("badge-bu-circle");
+    buC.setAttribute("cx", m.x); buC.setAttribute("cy", m.y + 29); buC.setAttribute("r", 12);
+    const buT = document.createElementNS(svgNS, "text");
+    buT.classList.add("badge-bu-text");
+    buT.setAttribute("x", m.x); buT.setAttribute("y", m.y + 30);
+    buT.textContent = "BU";
+    g.appendChild(buC);
+    g.appendChild(buT);
+  }
+
+  g.addEventListener("click", () => selectMilestone(i));
+  layer.appendChild(g);
+});
+
+function selectMilestone(i){
+  document.querySelectorAll('.node-group').forEach(n => n.classList.remove('active'));
+  document.querySelector(`.node-group[data-idx="${i}"]`).classList.add('active');
+  const m = milestones[i];
+
+  let badgesHtml = "";
+  if(m.ceo) badgesHtml += `<span class="b-ceo">🏆 CEO Award</span>`;
+  if(m.fav) badgesHtml += `<span class="b-fav">⭐ Favorite role</span>`;
+  if(m.buChange) badgesHtml += `<span class="b-bu">🔁 BU change</span>`;
+
+  const highlightsHtml = m.highlights.map(h => `<li>${h}</li>`).join("");
+
+  document.getElementById('detailBar').innerHTML = `
+    <div class="db-left">
+      <div class="db-head">
+        <div class="db-icon"><img src="${m.icon}" alt=""></div>
+        <h3>${m.full}</h3>
+      </div>
+      ${badgesHtml ? `<div class="db-badges">${badgesHtml}</div>` : ""}
+      <div class="db-meta">
+        <div>🗓️ ${m.dates}</div>
+        <div>📍 ${m.location}</div>
+        <div>🏢 ${m.bu}</div>
+      </div>
+    </div>
+    <ul class="db-right db-highlights">${highlightsHtml}</ul>
+  `;
+}
+
+window.addEventListener('load', () => setTimeout(() => selectMilestone(milestones.length - 1), 600));
+</script>
+</body>
+</html>
