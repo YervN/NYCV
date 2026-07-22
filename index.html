@@ -64,11 +64,11 @@
   main{
     flex:1 1 auto; position:relative; z-index:2;
     display:flex; align-items:center; justify-content:center;
-    min-height:0; padding:0 10px;
+    min-width:0; min-height:0; padding:0 10px;
     overflow:auto;
   }
-  #timelineWrap{ width:100%; height:100%; min-height:280px; display:flex; align-items:center; justify-content:center; }
-  #pathSvg{width:100%; height:100%; max-height:44vh;}
+  #timelineWrap{ width:100%; min-width:0; height:100%; min-height:280px; display:flex; align-items:center; justify-content:center; }
+  #pathSvg{display:block; width:100%; height:100%; max-height:none;}
   .path-bg{fill:none; stroke:#d7e2f5; stroke-width:7; stroke-linecap:round;}
   .path-flow{
     fill:none; stroke:url(#flowGrad); stroke-width:7; stroke-linecap:round;
@@ -152,11 +152,11 @@
   .flip-row::-webkit-scrollbar{ height:6px; }
   .flip-row::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
   .flip-card{
-    flex:0 0 auto; height:19vh; min-height:130px; aspect-ratio:var(--ar); width:auto;
+    flex:0 0 auto; height:max(100px, min(19vh, calc((100vw - 132px) / 7.7))); aspect-ratio:var(--ar); width:auto;
     perspective:1000px; cursor:pointer;
   }
   .quote-card{
-    flex:0 0 auto; height:19vh; min-height:130px; aspect-ratio:898/768; width:auto;
+    flex:0 0 auto; height:max(100px, min(19vh, calc((100vw - 132px) / 7.7))); aspect-ratio:898/768; width:auto;
     perspective:1000px; cursor:pointer;
   }
   .flip-inner{
